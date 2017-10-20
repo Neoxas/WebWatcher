@@ -5,7 +5,7 @@ except ImportError:
 
 config = {
         'description': 'module to watch trade sites online for items with specific keywords',
-        'author': 'Rob Thomas',
+        'author': 'Schmeegy, Wizard, Wonderboy',
         'URL': 'nil',
         'download_url': 'nil',
         'author_email': 'nil',
