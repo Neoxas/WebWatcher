@@ -1,3 +1,4 @@
+import requests
 from bs4 import BeautifulSoup as BSoup4
 
 class ParserError(Exception):
@@ -25,6 +26,14 @@ class Parser(object):
     @keywords.setter
     def keywords(self, keywords):
         self._keywords = keywords
+
+    def _build_list_of_links(page_url):
+        page = requests.get(page_url).text
+        soup = BSoup4(page)
+        list_of_links=[]
+        for item in soup.find_all('a', {'itemprop':'name'}):
+            list_of_links.append(item.git('href'))
+        return(list_of_links)
 
 class EbayParser(Parser):
     pass
