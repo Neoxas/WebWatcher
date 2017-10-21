@@ -16,6 +16,8 @@ class Parser(object):
     def __init__(self):
         raise InvalidParser("Can't create Parser objects")
 
+    def __init__(self, keywords):
+
     @property
     def keywords(self):
         if hasattr(self, "_keywords"):
@@ -35,8 +37,25 @@ class Parser(object):
             list_of_links.append(item.git('href'))
         return(list_of_links)
 
+    def _get_page_text( self, webpage ):
+        return requests.get( webpage )
+
 class EbayParser(Parser):
     pass
 
 class GumtreeParser(Parser):
-    pass
+    def __init__( self, keywords, search_location="England", category="all" ):
+        self.keywords = keywords
+        self.search_location = search_location
+        self.category = category
+
+    @property
+    def query( self ):
+        # Queries take the format of
+        # https://www.gumtree.com/search?category={{category}}&q={{query (spaces are +)}}&search_location={{search location}}
+        return( "https://www.gumtree.com/search?category=%s&q=%s&search_location=%s" 
+            % (self.category.replace( " ", "+" ),
+               self.query.replace( " ", "+" ),
+               self.search_location.replace( " ", "+" ) )
+
+
