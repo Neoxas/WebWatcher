@@ -11,7 +11,7 @@ config = {
         'author_email': 'nil',
         'version': '0.1',
         'install_requires': ['nose'],
-        'packages': ['beautifulsoup4','webwatcher'],
+        'packages': ['beautifulsoup4','requests','webwatcher'],
         'scripts': [],
         'name': 'WebWatcher'
         }
