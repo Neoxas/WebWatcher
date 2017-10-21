@@ -1,6 +1,7 @@
 import requests
 from bs4 import BeautifulSoup as BSoup4
 
+
 class ParserError(Exception):
     """ Base Parser Exception """
     pass
@@ -27,13 +28,19 @@ class Parser(object):
     def keywords(self, keywords):
         self._keywords = keywords
 
-    def _build_list_of_links(page_url):
-        page = requests.get(page_url).text
-        soup = BSoup4(page)
+    def _build_list_of_links(self, page_url):
+        response = requests.get(page_url).text
+        soup = BSoup4(response, "html.parser")
         list_of_links=[]
-        for item in soup.find_all('a', {'itemprop':'name'}):
-            list_of_links.append(item.git('href'))
+        for item in soup.findAll('a', href=True):
+            list_of_links.append(item['href'])
         return(list_of_links)
+
+class TestingParser(Parser):
+    """ Parser object for testing methods """
+    NAME = "Testing Parser"
+    def __init__(self):
+        pass
 
 class EbayParser(Parser):
     pass
