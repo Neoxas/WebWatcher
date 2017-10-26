@@ -20,7 +20,11 @@ class Parser(object):
     @property
     def keywords(self):
         if hasattr(self, "_keywords"):
-            return self._keywords
+            KeywordString = self._keywords[0]
+            if len(self._keywords) > 1:
+                for word in self._keywords[1:]:
+                    KeywordString += " " + str(word)
+            return KeywordString
         else:
             return "None"
 
@@ -36,14 +40,13 @@ class Parser(object):
             list_of_links.append(item['href'])
         return(list_of_links)
 
+    def send_email(self):
+        #will need smtplib library to send emails
+        pass
+
 class TestingParser(Parser):
     """ Parser object for testing methods """
     NAME = "Testing Parser"
     def __init__(self):
         pass
 
-class EbayParser(Parser):
-    pass
-
-class GumtreeParser(Parser):
-    pass
