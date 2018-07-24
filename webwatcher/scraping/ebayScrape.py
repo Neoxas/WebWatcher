@@ -19,8 +19,8 @@ def GetSubSoupTags( soupTags, tagToFind ):
 
 # Parses an item page to extract all content
 def ParseItemPageTags( soupTags, hyperlink ):
-    titleTags = GetSubSoupTags( soupTags, '[itemprop="name"]' )
-    title = titleTags[ 0  ].getText()
+    titleTags = GetSubSoupTags( soupTags, '#itemTitle' )
+    title = titleTags[ 0  ].getText().strip( 'Details about \\xa' )
 
     priceTags = GetSubSoupTags( soupTags, '[itemprop="price"]' )
     price = priceTags[ 0 ][ 'content' ]
@@ -54,6 +54,7 @@ def ScrapeAllItemPages( links ):
     itemList = []
     for link in links:
         itemList.append( ScrapeItemPage( link ) )
+        print( 'Got item : ' + str( itemList[-1] ) )
     return itemList
 
 # Sends a simple request to the webpage and checks if the status code returns correctly
