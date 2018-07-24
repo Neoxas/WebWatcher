@@ -6,7 +6,7 @@ import bs4
 import sys
 
 # Named tuple declaration for each item detail we want
-Item = namedtuple( 'Item', ['name', 'price', 'link'] )
+Item = namedtuple( 'Item', ['name', 'price', 'link', 'description', 'location'] )
 
 gumTreeBase = 'https://www.gumtree.com'
 gumTreeSearchAddr = gumTreeBase + '/search?'
@@ -29,6 +29,22 @@ def ParseSearchPageForLinks( soupTags ):
 
     return Item( name=title, price=price, link=hyperlink )
 
+# Parses an item page to extract all content
+def ParseItemPageTags( soupTags, hyperlink ):
+    titleTags = GetSubSoupTags( soupTags, '[itemprop="name"]' )
+    title = titleTags[ 0  ].getText()
+
+    priceTags = GetSubSoupTags( soupTags, '[itemprop="price"]' )
+    price = priceTags[ 0 ].getText()
+
+    descriptionTags = GetSubSoupTags( soupTags, '[itemprop="description"]' )
+    description = descriptionTags[ 0 ].getText()
+
+    locationTags = GetSubSoupTags( soupTags, '[itemprop="address"]' )
+    location = locationTags[ 0 ].getText()
+
+    return Item( name=title, price=price, link=hyperlink, description=description, location=location)
+
 # Gets the hyperlinks to each item from a top level gum tree page
 def GetIndividualHyperlinks( pageSoup ):
     print( "Finding hyperlinks..." )
@@ -46,11 +62,17 @@ def GetIndividualHyperlinks( pageSoup ):
 
 # Scrapes the provided item page
 def ScrapeItemPage( link ):
-    pass
+    res = GetWebPage( gumTreeBase + link )
+    itemPageSoup = bs4.BeautifulSoup( res.text, "html.parser" )
+    return ParseItemPageTags( itemPageSoup, link )
 
 # Scapes all item pages provided and concatinates
+# Returns : list containing all item objects from each web page
 def ScrapeAllItemPages( links ):
-    pass
+    itemList = []
+    for link in links:
+        itemList.append( ScrapeItemPage( link ) )
+    return itemList
 
 # Sends a simple request to the webpage and checks if the status code returns correctly
 def GetWebPage( address ):
@@ -69,16 +91,11 @@ def main():
     print("Soupifying...")
     gumSoup = bs4.BeautifulSoup( res.text, "html.parser" )
 
-    print( "Getting listings with links..." )
-    foundItems = gumSoup.select( eachAdvertCriteria )
+    hyperlinks = GetIndividualHyperlinks( gumSoup )
+    itemList = ScrapeAllItemPages( hyperlinks )
 
-    print( "Condensing to structures..." )
-    itemList = []
-    for item in foundItems:
-        if( item.get( 'href'  ) is not '' ):
-            itemList.append( ParseSearchPageForLinks( item ) )
-
-    print( "Number of structures : " + str( len( itemList ) ) )
+    for item in itemList:
+        print ( item )
 
 if __name__ == '__main__':
     main()
