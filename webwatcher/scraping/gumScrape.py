@@ -77,7 +77,7 @@ def ScrapeAllItemPages( links ):
 # Sends a simple request to the webpage and checks if the status code returns correctly
 def GetWebPage( address ):
     res = requests.get( address )
-    print("Checking status coide...")
+    print("Checking status code...")
     res.raise_for_status()
     return res
 
